@@ -1,0 +1,1 @@
+public record struct GeocodeData(string Latitude, string Longitude);
