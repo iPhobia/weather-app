@@ -12,7 +12,7 @@ public record OpenMeteoDaily
     public DateOnly[] Time { get; set; }
 
     [JsonPropertyName("weather_code")]
-    public int[] WeatherCode { get; init; } = [];
+    public WeatherCode[] WeatherCode { get; init; } = [];
 
     [JsonPropertyName("temperature_2m_max")]
     public decimal[] TemperatureMax { get; init; } = [];
@@ -24,10 +24,10 @@ public record OpenMeteoDaily
     public decimal[] Humidity { get; init; } = [];
 
     [JsonPropertyName("sunrise")]
-    public DateTime[] Sunrise { get; init; } = [];
+    public DateTimeOffset[] Sunrise { get; init; } = [];
 
     [JsonPropertyName("sunset")]
-    public DateTime[] Sunset { get; init; } = [];
+    public DateTimeOffset[] Sunset { get; init; } = [];
 
     [JsonPropertyName("wind_speed_10m_max")]
     public decimal[] WindSpeedMax { get; init; } = [];

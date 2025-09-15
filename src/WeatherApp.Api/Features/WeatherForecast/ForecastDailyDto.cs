@@ -5,5 +5,5 @@ public record ForecastDailyDto(
     decimal TemperatureMinC,
     string WeatherCondition,
     string WindSpeedMax,
-    DateTime Sunset,
-    DateTime Sunrise);
+    DateTimeOffset Sunset,
+    DateTimeOffset Sunrise);

@@ -47,14 +47,41 @@ public record WeatherForecastDto
                 dayForecast[i].Day.TemperatureMin,
                 dayForecast[i].Day.WeatherCondition.Text,
                 dayForecast[i].Day.WindSpeedMax.ToString($"{0}km/h"),
-                DateTime.Parse(dayForecast[i].Astro.Sunset, CultureInfo.InvariantCulture),
-                DateTime.Parse(dayForecast[i].Astro.Sunrise, CultureInfo.InvariantCulture)
+                DateTimeOffset.Parse(dayForecast[i].Astro.Sunset, CultureInfo.InvariantCulture),
+                DateTimeOffset.Parse(dayForecast[i].Astro.Sunrise, CultureInfo.InvariantCulture)
             ));
         }
 
         return new WeatherForecastDto
         {
             Source = "weatherapi",
+            City = city,
+            DailyForecasts = dailyForecasts
+        };
+    }
+
+    public static WeatherForecastDto MapFrom(AccuWeatherForecastResponse response, string city)
+    {
+        var dailyForecasts = new List<ForecastDailyDto>();
+        var forecasts = response.DailyForecasts;
+
+        for (int i = 0; i < forecasts.Length; i++)
+        {
+            dailyForecasts.Add(new ForecastDailyDto(
+                DateOnly.FromDateTime(forecasts[i].Date),
+                forecasts[i].Day.RelativeHumidity.Average.ToString($"{0}'%'"),
+                forecasts[i].Temperature.Maximum.Value,
+                forecasts[i].Temperature.Minimum.Value,
+                forecasts[i].Day.IconPhrase,
+                forecasts[i].Day.Wind.Speed.Value.ToString($"{0}km/h"),
+                forecasts[i].Sun.Set,
+                forecasts[i].Sun.Rise)
+            );
+        }
+
+        return new WeatherForecastDto
+        {
+            Source = "accuweather",
             City = city,
             DailyForecasts = dailyForecasts
         };
