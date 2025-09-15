@@ -9,7 +9,7 @@ public class OpenMeteoHttpClient(
     IOptionsSnapshot<OpenMeteoApiOptions> openMeteoOptions) 
     : IWeatherForecastApiHttpClient
 {
-    public async Task<WeatherForecastDto> GetWeatherForecast(string city, DateOnly date, CancellationToken ct = default)
+    public async Task<WeatherForecastDto> GetWeatherForecast(string city, int forecastDays, CancellationToken ct = default)
     {
         var geocodeData = await GetCityGeocode(city);
 
@@ -17,31 +17,20 @@ public class OpenMeteoHttpClient(
         {
             ["latitude"] = geocodeData.Latitude,
             ["longitude"] = geocodeData.Longitude,
-            ["start_date"] = date.ToString("yyyy-MM-dd"),
-            ["end_date"] = date.ToString("yyyy-MM-dd"),
+            ["forecast_days"] = forecastDays.ToString(),
             ["daily"] = "weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean,sunrise,sunset,wind_speed_10m_max",
             ["timezone"] = "auto"
         };
-        var url = QueryHelpers.AddQueryString(openMeteoOptions.Value.WeatherForecastEndpoint, queryParams);
+        var url = QueryHelpers.AddQueryString(openMeteoOptions.Value.ForecastEndpoint, queryParams);
 
         var response = await httpClient.GetAsync(url, ct);
 
         var deserializedResponse  = await JsonSerializer.DeserializeAsync<OpenMeteoWeatherForecastResponse>(
             await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
 
-        var dayForecast = deserializedResponse!.Daily;
-
-        return new WeatherForecastDto(
-            "https://open-meteo.com", 
-            date, 
-            city,
-            dayForecast.Humidity[0].ToString($"{0}'%'"),
-            (int)dayForecast.TemperatureMax[0],
-            (int)dayForecast.TemperatureMin[0],
-            dayForecast.WeatherCode[0].ToString(),
-            dayForecast.WindSpeedMax[0].ToString($"{0}km/h"),
-            DateTime.Parse(dayForecast.Sunset[0]),
-            DateTime.Parse(dayForecast.Sunrise[0]));
+        return WeatherForecastDto.MapFrom(
+            deserializedResponse!,
+            city);
     }
 
     private async ValueTask<GeocodeData> GetCityGeocode(string city)

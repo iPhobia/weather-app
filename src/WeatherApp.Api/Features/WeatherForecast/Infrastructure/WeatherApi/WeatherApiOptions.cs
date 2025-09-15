@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 
-public record OpenMeteoApiOptions
+public record WeatherApiOptions
 {
     [Required, Url]
     public string ForecastEndpoint { get; init; }
 
-    [Required, Url]
-    public string GeocodingEndpoint { get; init; }
+    [Required]
+    public string ApiKey { get; init; }
 }

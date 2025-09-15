@@ -6,12 +6,12 @@ public class WeatherForecastModule : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapGet("/weatherforecast", async (
-            DateOnly date,
+            int forecastDays,
             string city,
             IMediator mediator,
             CancellationToken ct) =>
         {
-            var result = await mediator.Send(new GetWeatherForecastQuery(date, city), ct);
+            var result = await mediator.Send(new GetWeatherForecastQuery(forecastDays, city), ct);
             return Results.Ok(result);
         });
     }

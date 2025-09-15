@@ -1,4 +1,4 @@
 public interface IWeatherForecastApiHttpClient
 {
-    Task<WeatherForecastDto> GetWeatherForecast(string city, DateOnly date, CancellationToken ct = default);
+    Task<WeatherForecastDto> GetWeatherForecast(string city, int forecastDays, CancellationToken ct = default);
 }

@@ -4,9 +4,15 @@ public static class DependencyInjection
     {
         serviceCollection.AddHttpClient<OpenMeteoHttpClient>();
         serviceCollection.AddScoped<IWeatherForecastApiHttpClient, OpenMeteoHttpClient>();
-
         serviceCollection.AddOptions<OpenMeteoApiOptions>()
             .Bind(configuration.GetSection("OpenMeteoApi"))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();    
+
+        serviceCollection.AddHttpClient<WeatherApiHttpClient>();
+        serviceCollection.AddScoped<IWeatherForecastApiHttpClient, WeatherApiHttpClient>();
+        serviceCollection.AddOptions<WeatherApiOptions>()
+            .Bind(configuration.GetSection("WeatherApi"))
             .ValidateDataAnnotations()
             .ValidateOnStart();    
     }
