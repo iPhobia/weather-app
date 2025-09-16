@@ -20,7 +20,7 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: ./src/WeatherApp.Api
         platforms: linux/amd64
         push: true
         tags: iphobia/weather-forecast-aggregator:linux
