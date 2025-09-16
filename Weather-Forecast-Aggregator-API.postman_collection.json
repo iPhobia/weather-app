@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "e3733ab4-78b4-4a26-86f9-cbd3a26a1e78",
+		"name": "Weather-Forecast-Aggregator-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23298318"
+	},
+	"item": [
+		{
+			"name": "ForecastOdesa",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://weather-forecast-aggregator.prouddune-5b383109.westeurope.azurecontainerapps.io?forecastDays=1&city=Odesa",
+					"protocol": "https",
+					"host": [
+						"weather-forecast-aggregator",
+						"prouddune-5b383109",
+						"westeurope",
+						"azurecontainerapps",
+						"io"
+					],
+					"query": [
+						{
+							"key": "forecastDays",
+							"value": "1"
+						},
+						{
+							"key": "city",
+							"value": "Odesa"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ForecastWarsaw",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://weather-forecast-aggregator.prouddune-5b383109.westeurope.azurecontainerapps.io/?forecastDays=5&city=Warsaw",
+					"protocol": "https",
+					"host": [
+						"weather-forecast-aggregator",
+						"prouddune-5b383109",
+						"westeurope",
+						"azurecontainerapps",
+						"io"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "forecastDays",
+							"value": "5"
+						},
+						{
+							"key": "city",
+							"value": "Warsaw"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
