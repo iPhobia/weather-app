@@ -1,3 +1,9 @@
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.AccuWeather;
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.OpenMeteo;
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.WeatherApi;
+
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure;
+
 public static class DependencyInjection
 {
     public static void AddInfrastructure(this IServiceCollection serviceCollection, IConfiguration configuration)
@@ -14,13 +20,17 @@ public static class DependencyInjection
         serviceCollection.AddOptions<WeatherApiOptions>()
             .Bind(configuration.GetSection("WeatherApi"))
             .ValidateDataAnnotations()
-            .ValidateOnStart();    
-            
+            .ValidateOnStart();
+
         serviceCollection.AddHttpClient<AccuWeatherHttpClient>();
+            // .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            // {
+            //     AutomaticDecompression = DecompressionMethods.GZip
+            // });
         serviceCollection.AddScoped<IWeatherForecastApiHttpClient, AccuWeatherHttpClient>();
         serviceCollection.AddOptions<AccuWeatherApiOptions>()
             .Bind(configuration.GetSection("AccuWeatherApi"))
             .ValidateDataAnnotations()
-            .ValidateOnStart();    
+            .ValidateOnStart();
     }
 }

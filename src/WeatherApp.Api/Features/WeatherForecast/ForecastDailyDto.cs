@@ -1,3 +1,5 @@
+namespace WeatherApp.Api.Features.WeatherForecast;
+
 public record ForecastDailyDto(
     DateOnly Date,
     string HumidityAvg,

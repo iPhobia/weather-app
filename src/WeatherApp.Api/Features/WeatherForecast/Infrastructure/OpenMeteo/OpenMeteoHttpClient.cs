@@ -1,17 +1,23 @@
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
+// API docs https://open-meteo.com/en/docs
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.OpenMeteo;
+
 public class OpenMeteoHttpClient(
     HttpClient httpClient,
-    IOptionsSnapshot<OpenMeteoApiOptions> openMeteoOptions) 
+    IOptionsSnapshot<OpenMeteoApiOptions> openMeteoOptions)
     : IWeatherForecastApiHttpClient
 {
+    private static readonly ConcurrentDictionary<string, GeocodeData> _geoData = new();
+
     public async Task<WeatherForecastDto> GetWeatherForecast(string city, int forecastDays, CancellationToken ct = default)
     {
-        var geocodeData = await GetCityGeocode(city);
+        var geocodeData = await GetCityGeocode(city, ct);
 
         var queryParams = new Dictionary<string, string?>
         {
@@ -25,7 +31,9 @@ public class OpenMeteoHttpClient(
 
         var response = await httpClient.GetAsync(url, ct);
 
-        var deserializedResponse  = await JsonSerializer.DeserializeAsync<OpenMeteoWeatherForecastResponse>(
+        response.EnsureSuccessStatusCode();
+
+        var deserializedResponse = await JsonSerializer.DeserializeAsync<OpenMeteoWeatherForecastResponse>(
             await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
 
         return WeatherForecastDto.MapFrom(
@@ -33,13 +41,18 @@ public class OpenMeteoHttpClient(
             city);
     }
 
-    private async ValueTask<GeocodeData> GetCityGeocode(string city)
+    private async ValueTask<GeocodeData> GetCityGeocode(string city, CancellationToken ct)
     {
-        var queryParams = $"?name={city}&count=1";
-        var response = await httpClient.GetAsync(openMeteoOptions.Value.GeocodingEndpoint + queryParams);
+        var geocodeExists = _geoData.TryGetValue(city, out var geocode);
 
-        await using var stream = await response.Content.ReadAsStreamAsync();
-        using var jDoc = await JsonDocument.ParseAsync(stream);
+        if (geocodeExists)
+            return geocode;
+
+        var queryParams = $"?name={city}&count=1";
+        var response = await httpClient.GetAsync(openMeteoOptions.Value.GeocodingEndpoint + queryParams, ct);
+
+        await using var stream = await response.Content.ReadAsStreamAsync(ct);
+        using var jDoc = await JsonDocument.ParseAsync(stream, cancellationToken: ct);
 
         var parsedResult = jDoc.RootElement
             .GetProperty("results")[0];
@@ -49,8 +62,12 @@ public class OpenMeteoHttpClient(
             .ToString(CultureInfo.InvariantCulture);
         var lon = parsedResult.GetProperty("longitude")
             .GetDecimal()
-            .ToString(CultureInfo.InvariantCulture); 
+            .ToString(CultureInfo.InvariantCulture);
 
-        return new GeocodeData(lat, lon);
+        var g = new GeocodeData(lat, lon);
+
+        _geoData.TryAdd(city, geocode);
+
+        return g;
     }
 }

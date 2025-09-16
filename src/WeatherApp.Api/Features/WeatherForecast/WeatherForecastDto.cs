@@ -1,4 +1,9 @@
 using System.Globalization;
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.AccuWeather;
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.OpenMeteo;
+using WeatherApp.Api.Features.WeatherForecast.Infrastructure.WeatherApi;
+
+namespace WeatherApp.Api.Features.WeatherForecast;
 
 public record WeatherForecastDto
 {

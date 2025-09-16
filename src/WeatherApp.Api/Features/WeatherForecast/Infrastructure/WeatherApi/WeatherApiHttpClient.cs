@@ -3,6 +3,9 @@ using System.Text.Json;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.WeatherApi;
+
+// API docs https://www.weatherapi.com/docs/
 public class WeatherApiHttpClient(
     HttpClient httpClient,
     IOptionsSnapshot<WeatherApiOptions> weatherApiOptions)
@@ -22,7 +25,9 @@ public class WeatherApiHttpClient(
 
         var response = await httpClient.GetAsync(url, ct);
 
-        var deserializedResponse  = await JsonSerializer.DeserializeAsync<WeatherApiForecastResponse>(
+        response.EnsureSuccessStatusCode();
+
+        var deserializedResponse = await JsonSerializer.DeserializeAsync<WeatherApiForecastResponse>(
             await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
 
         return WeatherForecastDto.MapFrom(

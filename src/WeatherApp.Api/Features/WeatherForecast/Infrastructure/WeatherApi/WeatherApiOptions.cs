@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.WeatherApi;
+
 public record WeatherApiOptions
 {
     [Required, Url]

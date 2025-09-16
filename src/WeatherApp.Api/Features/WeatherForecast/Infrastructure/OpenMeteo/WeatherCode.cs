@@ -1,3 +1,5 @@
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.OpenMeteo;
+
 public enum WeatherCode
 {
     ClearSky = 0,

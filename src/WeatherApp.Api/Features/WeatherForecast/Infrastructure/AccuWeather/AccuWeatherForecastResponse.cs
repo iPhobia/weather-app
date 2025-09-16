@@ -1,3 +1,4 @@
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.AccuWeather;
 
 public record AccuWeatherForecastResponse
 {

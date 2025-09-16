@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.OpenMeteo;
+
 public record OpenMeteoWeatherForecastResponse
 {
     [JsonPropertyName("daily")]

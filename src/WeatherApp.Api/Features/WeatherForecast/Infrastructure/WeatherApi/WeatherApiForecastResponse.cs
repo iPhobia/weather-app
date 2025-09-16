@@ -1,5 +1,6 @@
-using System;
 using System.Text.Json.Serialization;
+
+namespace WeatherApp.Api.Features.WeatherForecast.Infrastructure.WeatherApi;
 
 public record WeatherApiForecastResponse
 {
